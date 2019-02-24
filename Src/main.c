@@ -68,7 +68,7 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-
+static int hpstm_uart_initialized = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,7 +77,13 @@ static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+#ifdef __GNUC__
+/* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
+   set to 'Yes') calls __io_putchar() */
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -122,8 +128,12 @@ int main(void)
   MX_I2C1_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  hpstm_uart_initialized = 1;
   // green LED on forever - to signal that init was done.
   HAL_GPIO_WritePin(GPIOB, LD1_Pin, GPIO_PIN_SET);
+  // send message to UART
+  printf("Init complete.\r\n");
+  fflush(stdout);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -375,7 +385,15 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+PUTCHAR_PROTOTYPE
+{
+	  /* send  fputc output to UART/COM port */
+	  // from STM32Cube_FW_F7_V1.14.0\Projects\STM32F767ZI-Nucleo\Examples\UART\UART_Printf\Src\main.c
+	  /* e.g. write a character to the USART3 and Loop until the end of transmission */
+	  HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
+	  return ch;
 
+}
 /* USER CODE END 4 */
 
 /**
@@ -389,6 +407,10 @@ void Error_Handler(void)
 
   // red LED on to signal fatal error
   HAL_GPIO_WritePin(GPIOB, LD3_Pin, GPIO_PIN_SET);
+  // try to send message to UART
+  if (hpstm_uart_initialized){
+	  printf("*** Fatal error occurred - system halted. ***\r\n");
+  }
   // and loop forever
   while(1){
 
