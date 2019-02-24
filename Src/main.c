@@ -387,6 +387,13 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
 
+  // red LED on to signal fatal error
+  HAL_GPIO_WritePin(GPIOB, LD3_Pin, GPIO_PIN_SET);
+  // and loop forever
+  while(1){
+
+  }
+
   /* USER CODE END Error_Handler_Debug */
 }
 
