@@ -20,6 +20,7 @@ Required Software:
 Recommended Software:
 * [STM32CubeMX] - this project was generated using this tool.
   You can open `stm32-i2c-24c01c.ioc` project file and customize it.
+* Putty to watch info/error messages from ARM program.
 
 # Build
 
@@ -28,7 +29,32 @@ TODO:
 
 # Run/Debug
 
+To see info/error messages on UART you need to:
+* get `COMx` port number in `Device Manager`:
+  - expand `Ports (COM & LPT)`
+  - notice COM port number, for example `STMicroelectronics STLink Virtual COM Port (COM3)`
+
+In Putty: 
+* create new connection type `Serial` with:
+  - Serial line: `COMx` (replace `x` with your COM port number)
+  - Speed: 115200
+* in `Connection` -> `Serial` tree use:
+  - Data bits: `8`
+  - Stop bits: `1`
+  - Parity: `None`
+  - Flow control: `None`
+* apply/save etc... and connect
+
 TODO: 
+
+# Random notes
+
+* `int __io_putchar(int ch)` redefinition (required to redirect `printf(3)`
+   to UART will not work until generated `syscalls.c` is added to 
+   source files (without it there are hardcoded null stubs, without
+   weak symbol `__io_putchar` to be redefined)
+
+
 
 [STM32CubeF7]: https://www.st.com/en/embedded-software/stm32cubef7.html
 [System Workbench for STM32]: http://www.openstm32.org/System%2BWorkbench%2Bfor%2BSTM32
