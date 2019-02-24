@@ -122,7 +122,8 @@ int main(void)
   MX_I2C1_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  // green LED on forever - to signal that init was done.
+  HAL_GPIO_WritePin(GPIOB, LD1_Pin, GPIO_PIN_SET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -132,6 +133,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    // blink Blue LED
+	HAL_GPIO_TogglePin(GPIOB,LD2_Pin);
+	HAL_Delay(100); // 100ms delay
   }
   /* USER CODE END 3 */
 }

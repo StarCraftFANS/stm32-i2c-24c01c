@@ -3,6 +3,10 @@
 
 WARNING! Work in Progress
 
+Current status:
+* green LED after init
+* blinking blue LED in `while(1)` loop
+
 # Setup
 
 Required Hardware:
