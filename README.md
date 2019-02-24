@@ -6,6 +6,7 @@ WARNING! Work in Progress
 Current status:
 * green LED after init
 * blinking blue LED in `while(1)` loop
+* UART output on init or error.
 
 # Setup
 
