@@ -8,6 +8,9 @@ Current status:
 * blinking blue LED in `while(1)` loop
 * UART output on init or error.
 
+![Schematic of STM32 Nucleo with I2C EEPROM 24C01C](https://github.com/hpaluch/stm32-i2c-24c01c /blob/master/assets/ExpressPCB/nucleo-i2c-24c01c.png?raw=true) 
+
+
 # Setup
 
 Required Hardware:
