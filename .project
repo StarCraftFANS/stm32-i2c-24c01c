@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>stm32-i2c-24c01c</name>
-	<comment></comment>
+	<comment />
 	<projects>
 	</projects>
 	<buildSpec>
@@ -28,7 +28,7 @@
 		<link>
 			<name>Src/syscalls.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_LOC/syscalls.c</locationURI>
+			<location>PROJECT_LOC/syscalls.c</location>
 		</link>
 		<link>
 			<name>Drivers/STM32F7xx_HAL_Driver/stm32f7xx_hal.c</name>
