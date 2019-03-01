@@ -53,12 +53,15 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define HPSTM_24C_MEM_SIZE 128
+// 0b1010 is device class 0b0000 is device address (HAL seems to expect 4-bits
+// even when device address is 3-bits?)
+#define HPSTM_24C_DEV_ADDRESS 0b10100000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#define HPSTM_MIN(x,y) ( (x) < (y) ? (x) : (y) )
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -69,6 +72,7 @@ UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 static int hpstm_uart_initialized = 0;
+static uint8_t memBuf[HPSTM_24C_MEM_SIZE];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,7 +92,40 @@ static void MX_USART3_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+// Hex/ASCII dump of memory
+void HpStm_DumpBuf(uint8_t *buf, int n){
+	const int VALUES_PER_LINE = 16;
 
+	int i=0;
+	printf("Dump of buffer at 0x%p,  bytes %u\r\n",buf,n);
+	for(i=0;i<n;i++){
+		// if it is new line - show address
+		if ( i % VALUES_PER_LINE == 0){
+			printf("0x%04x",i);
+		}
+		printf(" %02x",buf[i]);
+		// if it is last byte on line dump also ASCII values where possible...
+		if ( (i % VALUES_PER_LINE) == VALUES_PER_LINE - 1 || i == n-1 ){
+			int start =  i / VALUES_PER_LINE * VALUES_PER_LINE;
+			int end   = HPSTM_MIN( start + VALUES_PER_LINE,n);
+			int j=0;
+			// XXX: puts(3) always append \n
+			putc(' ',stdout);
+			for(j=start;j<end;j++){
+				uint8_t b = buf[j];
+				// NOTE: 127 behaves strange on some terminals
+				//       therefore replaced with '.' even when 7-bit
+				if (b>=32 && b<127){
+					putc(b,stdout);
+				} else {
+					putc('.',stdout);
+				}
+			}
+			puts("\r"); // new line
+		}
+	}
+	printf("\r\n");
+}
 /* USER CODE END 0 */
 
 /**
@@ -134,6 +171,16 @@ int main(void)
   // send message to UART
   printf("Init complete.\r\n");
   fflush(stdout);
+
+  memset(memBuf,0,sizeof(memBuf));
+
+  if(HAL_I2C_Mem_Read(&hi2c1,HPSTM_24C_DEV_ADDRESS,0,I2C_MEMADD_SIZE_8BIT,memBuf,sizeof(memBuf),10000)!= HAL_OK){
+	  printf("Memory read failed\n");
+	  Error_Handler();
+  }
+  // dump memory to serial console
+  HpStm_DumpBuf(memBuf,sizeof(memBuf));
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

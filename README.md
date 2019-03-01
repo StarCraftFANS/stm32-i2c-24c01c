@@ -5,8 +5,10 @@ WARNING! Work in Progress
 
 Current status:
 * green LED after init
+* reads whole EEPROM and prints hexdump on UART
 * blinking blue LED in `while(1)` loop
 * UART output on init or error.
+
 
 ![Schematic of STM32 Nucleo with I2C EEPROM 24C01C](https://github.com/hpaluch/stm32-i2c-24c01c/blob/master/assets/ExpressPCB/nucleo-i2c-24c01c.png?raw=true) 
 
@@ -49,9 +51,25 @@ In Putty:
   - Flow control: `None`
 * apply/save etc... and connect
 
-TODO: 
+
+On program startup you should see UART output like (currently boring data):
+```
+Init complete.
+Dump of buffer at 0x0x20000090,  bytes 128
+0x0000 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ................
+0x0010 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ................
+0x0020 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ................
+0x0030 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ................
+0x0040 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ................
+0x0050 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ................
+0x0060 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ................
+0x0070 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ................
+```
 
 # Random notes
+
+* The `SCA` and `SCL` must have pull-up resistor (tested `4k7`) tied to `+5V` otherwise
+  EEPROM will refuse to work.
 
 * `int __io_putchar(int ch)` redefinition (required to redirect `printf(3)`
    to UART will not work until generated `syscalls.c` is added to 
