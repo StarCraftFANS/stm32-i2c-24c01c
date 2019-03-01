@@ -53,6 +53,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+// should be enough timeout for everything on I2C...
+#define HPSTM_I2C_TIMEOUT_MS 10000
 #define HPSTM_24C_MEM_SIZE 128
 // 0b1010 is device class 0b0000 is device address (HAL seems to expect 4-bits
 // even when device address is 3-bits?)
@@ -172,13 +174,16 @@ int main(void)
   printf("Init complete.\r\n");
   fflush(stdout);
 
+  // ensure that buffer is clean
   memset(memBuf,0,sizeof(memBuf));
 
-  if(HAL_I2C_Mem_Read(&hi2c1,HPSTM_24C_DEV_ADDRESS,0,I2C_MEMADD_SIZE_8BIT,memBuf,sizeof(memBuf),10000)!= HAL_OK){
-	  printf("Memory read failed\n");
+  // read EEPROM to CPU's RAM - memBuf
+  if(HAL_I2C_Mem_Read(&hi2c1, HPSTM_24C_DEV_ADDRESS, 0, I2C_MEMADD_SIZE_8BIT,
+		  memBuf, sizeof(memBuf), HPSTM_I2C_TIMEOUT_MS)!= HAL_OK){
+	  printf("EEPROM read failed\n");
 	  Error_Handler();
   }
-  // dump memory to serial console
+  // dump EEPROM memory to serial console
   HpStm_DumpBuf(memBuf,sizeof(memBuf));
 
   /* USER CODE END 2 */
