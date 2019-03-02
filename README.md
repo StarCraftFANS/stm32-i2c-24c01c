@@ -28,32 +28,40 @@ Here is picture of my prototype circuit:
 
 ![Schematic of STM32 Nucleo with I2C EEPROM 24C01C](https://github.com/hpaluch/stm32-i2c-24c01c/blob/master/assets/ExpressPCB/nucleo-i2c-24c01c.png?raw=true) 
 
+NOTE: If you never used the `ST NUCLEO F767ZI` board please
+read my
+article [Getting started with ST NUCLEO F767ZI Board][Getting started with ST NUCLEO F767ZI Board]
 
 # Setup
 
 Required Hardware:
-* [STM NUCLEO-F767ZI] development board with Cortex-M7 CPU. 
-  Ordered [STM NUCLEO-F767ZI - Amazon.de]
-* [24C01C] - I2C EEPROM. Ordered [24C01C-I/P - Tme.eu]
+* [STM NUCLEO-F767ZI][STM NUCLEO-F767ZI] development board with Cortex-M7 CPU. 
+  Ordered [STM NUCLEO-F767ZI - Amazon.de][STM NUCLEO-F767ZI - Amazon.de]
+* [24C01C][24C01C] - I2C EEPROM. Ordered [24C01C-I/P - Tme.eu][24C01C-I/P - Tme.eu]
 * 1x 100nF ceramic capacitor
 * 2x 4k7 resistor
 * any suitable bread-board for prototyping  
 
 Recommended Hardware:
-* `Logical Analyzer`. Ordered [KeeYees USB Logic Analyzer - Amazon.de]
-* [Amphenol 2x5 cable - Tme.eu] to reduce straing on Logical Analyzer's connector.
-* [Bread board wires - Tme.eu] to wire parts on bread board
-* [Elegoo Jumper Wires - Amazon.de] - to interconnect boards and Analyzer etc.
+* `Logical Analyzer`.
+   Ordered [KeeYees USB Logic Analyzer - Amazon.de][KeeYees USB Logic Analyzer - Amazon.de]
+* [Amphenol 2x5 cable - Tme.eu][Amphenol 2x5 cable - Tme.eu] to
+  reduce straing on Logical Analyzer's connector.
+* [Bread board wires - Tme.eu][Bread board wires - Tme.eu] to
+  wire parts on bread board
+* [Elegoo Jumper Wires - Amazon.de][Elegoo Jumper Wires - Amazon.de] - to
+  interconnect boards and Analyzer etc.
 
 Required Software:
-* [STM32CubeF7] Firmware package requried to build this project.
+* [STM32CubeF7][STM32CubeF7] Firmware package requried to build this project.
   Must be unpacked to `C:\ARM` directory as `c:\ARM\STM32Cube_FW_F7_V1.14.0`.
-* [System Workbench for STM32] development IDE
+* [System Workbench for STM32][System Workbench for STM32] development IDE
 
 Recommended Software:
-* [STM32CubeMX] - this project was generated using this tool.
+* [STM32CubeMX][STM32CubeMX] - this project was generated using this tool.
   You can open `stm32-i2c-24c01c.ioc` project file and customize it.
-* Putty to watch info/error messages from ARM program.
+* [Putty][Putty] to watch info/error messages from ARM program. Putty
+  is perfect replacement for Hyperterminal (which is no longer included with recent Windows)
 * [Sigrok PulseView][Sigrok PulseView] most popular software for `Logical Analyzer`
 
 # Build
@@ -117,7 +125,8 @@ Dump of buffer at 0x0x20000094,  bytes 128
 
 # Logic Analyzer output
 
-Using [KeeYees USB Logic Analyzer] here are following outputs.
+Using [KeeYees USB Logic Analyzer][KeeYees USB Logic Analyzer - Amazon.de] here
+are following outputs.
 
 EEPROM write (writing test string `Hello! ...` starting on EEPROM address `0x5`:
 
@@ -126,7 +135,7 @@ EEPROM write (writing test string `Hello! ...` starting on EEPROM address `0x5`:
 NOTES:
 * The warning `Warning: Page write crossed...` is harmless in case 
   of `24C01C` EEPROM (it has 16-byte page buffer as desribed  
-  in [24C01C data-sheet]. However if you will use different EEPROM version
+  in [24C01C data-sheet][24C01C]. However if you will use different EEPROM version
   you may need to correct macro:
   
   ```c
@@ -137,7 +146,7 @@ NOTES:
 
   WARNING! Original Atmel `24C01` will NOT work, because it has entierly 
   different Address format (violating I2C standard) -
-  see [Atmel 24C01] data-sheet to verify it by yourself.
+  see [Atmel 24C01][Atmel 24C01] data-sheet to verify it by yourself.
 
 * There is absolutely perfect 100Khz timing as can be seen on right corner "Cursors"
 
@@ -159,7 +168,7 @@ Reading all data from EEPROM:
 # Resources
 
 You can also look 
-on [How to access I2C EEPROM 24C01C from LC CH341A USB Adapter]
+on [How to access I2C EEPROM 24C01C from LC CH341A USB Adapter][How to access I2C EEPROM 24C01C from LC CH341A USB Adapter]
 to compare this solution to version using USB to I2C Adapter.
 
 [Sigrok PulseView]: https://sigrok.org/wiki/Main_Page
@@ -169,7 +178,6 @@ to compare this solution to version using USB to I2C Adapter.
 [24C01C-I/P - Tme.eu]: https://www.tme.eu/en/details/24c01c-i_p/serial-eeprom-memories-integ-circ/microchip-technology/ 
 [Atmel 24C01]: https://dflund.se/~triad/krad/entrega/at24c01.pdf
 [24C01C]: http://ww1.microchip.com/downloads/en/devicedoc/21201k.pdf
-[24C01C data-sheet]: http://ww1.microchip.com/downloads/en/devicedoc/21201k.pdf
 [KeeYees USB Logic Analyzer - Amazon.de]: https://www.amazon.de/KeeYees-Logic-Analyzer-Farben-Arduino/dp/B07K6G55WG/
 [STM32CubeF7]: https://www.st.com/en/embedded-software/stm32cubef7.html
 [System Workbench for STM32]: http://www.openstm32.org/System%2BWorkbench%2Bfor%2BSTM32
@@ -179,7 +187,6 @@ to compare this solution to version using USB to I2C Adapter.
 [STM NUCLEO-F767ZI]: https://www.st.com/content/st_com/en/products/evaluation-tools/product-evaluation-tools/mcu-eval-tools/stm32-mcu-eval-tools/stm32-mcu-nucleo/nucleo-f767zi.html
 [Getting started with ST NUCLEO F767ZI Board]: https://github.com/hpaluch/hpaluch.github.io/wiki/Getting-started-with-ST-NUCLEO-F767ZI-Board
 [STM32CubeF7]: https://www.st.com/en/embedded-software/stm32cubef7.html
-[STM32 Nucleo-144 boards]: https://www.st.com/content/ccc/resource/technical/document/user_manual/group0/26/49/90/2e/33/0d/4a/da/DM00244518/files/DM00244518.pdf/jcr:content/translations/en.DM00244518.pdf
 [Putty]: https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
 [Getting started with ST NUCLEO F767ZI Board]: https://github.com/hpaluch/hpaluch.github.io/wiki/Getting-started-with-ST-NUCLEO-F767ZI-Board
 [How to access I2C EEPROM 24C01C from LC CH341A USB Adapter]: https://github.com/hpaluch/ch341-i2c-24c01c 
