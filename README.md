@@ -46,14 +46,14 @@ Recommended Hardware:
 * `Logical Analyzer`.
    Ordered [KeeYees USB Logic Analyzer - Amazon.de][KeeYees USB Logic Analyzer - Amazon.de]
 * [Amphenol 2x5 cable - Tme.eu][Amphenol 2x5 cable - Tme.eu] to
-  reduce straing on Logical Analyzer's connector.
+  reduce strain on Logical Analyzer's connector.
 * [Bread board wires - Tme.eu][Bread board wires - Tme.eu] to
   wire parts on bread board
 * [Elegoo Jumper Wires - Amazon.de][Elegoo Jumper Wires - Amazon.de] - to
   interconnect boards and Analyzer etc.
 
 Required Software:
-* [STM32CubeF7][STM32CubeF7] Firmware package requried to build this project.
+* [STM32CubeF7][STM32CubeF7] Firmware package required to build this project.
   Must be unpacked to `C:\ARM` directory as `c:\ARM\STM32Cube_FW_F7_V1.14.0`.
 * [System Workbench for STM32][System Workbench for STM32] development IDE
 
@@ -134,7 +134,7 @@ EEPROM write (writing test string `Hello! ...` starting on EEPROM address `0x5`:
 
 NOTES:
 * The warning `Warning: Page write crossed...` is harmless in case 
-  of `24C01C` EEPROM (it has 16-byte page buffer as desribed  
+  of `24C01C` EEPROM (it has 16-byte page buffer as described  
   in [24C01C data-sheet][24C01C]. However if you will use different EEPROM version
   you may need to correct macro:
   
@@ -144,8 +144,9 @@ NOTES:
   
   in `main.c`
 
-  WARNING! Original Atmel `24C01` will NOT work, because it has entierly 
-  different Address format (violating I2C standard) -
+  WARNING! Original Atmel `24C01` will NOT work, because it has
+  different Address format (using `Device address` as
+  `EEPROM data address` - violating I2C standard) -
   see [Atmel 24C01][Atmel 24C01] data-sheet to verify it by yourself.
 
 * There is absolutely perfect 100Khz timing as can be seen on right corner "Cursors"
@@ -189,4 +190,5 @@ to compare this solution to version using USB to I2C Adapter.
 [STM32CubeF7]: https://www.st.com/en/embedded-software/stm32cubef7.html
 [Putty]: https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
 [Getting started with ST NUCLEO F767ZI Board]: https://github.com/hpaluch/hpaluch.github.io/wiki/Getting-started-with-ST-NUCLEO-F767ZI-Board
-[How to access I2C EEPROM 24C01C from LC CH341A USB Adapter]: https://github.com/hpaluch/ch341-i2c-24c01c 
+[How to access I2C EEPROM 24C01C from LC CH341A USB Adapter]: https://github.com/hpaluch/ch341-i2c-24c01c
+
