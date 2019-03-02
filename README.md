@@ -100,6 +100,33 @@ Dump of buffer at 0x0x20000094,  bytes 128
 0x0070 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ................
 ```
 
+# Logic Analyzer output
+
+Using [KeeYees USB Logic Analyzer] here are following outputs.
+
+EEPROM write (writing test string `Hello! ...` starting on EEPROM address `0x5`:
+
+![STM32 - I2C EEPROM 24C01C page write](https://github.com/hpaluch/stm32-i2c-24c01c/blob/master/assets/PulseView/stm32-i2c-24c01c-page-write.png?raw=true) 
+
+NOTES:
+* The warning `Warning: Page write crossed...` is harmless in case 
+  of `24C01C` EEPROM (it has 16-byte page buffer as desribed  
+  in [24C01C data-sheet]. However if you will use different EEPROM version
+  you may need to correct macro:
+  
+  ```c
+  #define HPSTM_24C_WRITE_PAGE_SIZE 16 
+  ```
+  
+  in `main.c`
+
+  WARNING! Original Atmel `24C01` will NOT work, because it has entierly 
+  different Address format (violating I2C standard) -
+  see [Atmel 24C01] data-sheet to verify it by yourself.
+
+* There is absolutely perfect 100Khz timing as can be seen on right corner "Cursors"
+
+
 # Random notes
 
 * The `SCA` and `SCL` must have pull-up resistor (tested `4k7`) tied to `+5V` otherwise
@@ -116,7 +143,9 @@ You can also look
 on [How to access I2C EEPROM 24C01C from LC CH341A USB Adapter]
 to compare this solution to version using USB to I2C Adapter.
 
-
+[Atmel 24C01]: https://dflund.se/~triad/krad/entrega/at24c01.pdf
+[24C01C data-sheet]: http://ww1.microchip.com/downloads/en/devicedoc/21201k.pdf
+[KeeYees USB Logic Analyzer]: https://www.amazon.de/KeeYees-Logic-Analyzer-Farben-Arduino/dp/B07K6G55WG/
 [STM32CubeF7]: https://www.st.com/en/embedded-software/stm32cubef7.html
 [System Workbench for STM32]: http://www.openstm32.org/System%2BWorkbench%2Bfor%2BSTM32
 [STM32CubeMX]: https://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-configurators-and-code-generators/stm32cubemx.html
