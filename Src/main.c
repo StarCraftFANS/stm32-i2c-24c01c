@@ -56,9 +56,19 @@
 // should be enough timeout for everything on I2C...
 #define HPSTM_I2C_TIMEOUT_MS 10000
 #define HPSTM_24C_MEM_SIZE 128
+//
+// WARNING! Some 24C01x models have smaller page-size - 8-bytes!!!
+//          If you are using EEPROM different from 24C01C - consult your data-sheet!
+#define HPSTM_24C_WRITE_PAGE_SIZE 16
+#define HPSTM_24C_WRITE_PAGE_MASK (HPSTM_24C_WRITE_PAGE_SIZE -1)
+// EEPROM busy time after write - in data-sheet it is 1.5ms, we use 10ms
+#define HPSTM_24C_DELAY_AFTER_WRITE_MS 10
 // 0b1010 is device class 0b0000 is device address (HAL seems to expect 4-bits
 // even when device address is 3-bits?)
 #define HPSTM_24C_DEV_ADDRESS 0b10100000
+
+// EEPROM address where to put testBuf into EEPROM
+#define HPSTM_24C_TEST_ADDR 5
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -75,6 +85,8 @@ UART_HandleTypeDef huart3;
 /* USER CODE BEGIN PV */
 static int hpstm_uart_initialized = 0;
 static uint8_t memBuf[HPSTM_24C_MEM_SIZE];
+// buffer to hold dynamic test string
+static uint8_t testBuf[64];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -128,6 +140,65 @@ void HpStm_DumpBuf(uint8_t *buf, int n){
 	}
 	printf("\r\n");
 }
+
+static void Hpstm_PrintDuration(int printOutput){
+	static uint32_t startTick = 0;
+	uint32_t thisTick = HAL_GetTick();
+
+	if (startTick == 0){
+		startTick = thisTick;
+	}
+	if (printOutput){
+		printf("Done in %" PRIu32 " [ms]\r\n", thisTick-startTick);
+	}
+	startTick = thisTick;
+}
+
+static void Hpstm_ReadAndDumpEEPROM(){
+	  // ensure that buffer is clean
+	  memset(memBuf,0,sizeof(memBuf));
+
+	  printf("Reading whole EEPROM - %u bytes\r\n", sizeof(memBuf));
+	  Hpstm_PrintDuration(0);
+	  // read EEPROM to CPU's RAM - memBuf
+	  if(HAL_I2C_Mem_Read(&hi2c1, HPSTM_24C_DEV_ADDRESS, 0, I2C_MEMADD_SIZE_8BIT,
+			  memBuf, sizeof(memBuf), HPSTM_I2C_TIMEOUT_MS) != HAL_OK){
+		  printf("EEPROM read failed\n");
+		  Error_Handler();
+	  }
+	  Hpstm_PrintDuration(1);
+	  // dump EEPROM memory to serial console
+	  HpStm_DumpBuf(memBuf,sizeof(memBuf));
+}
+
+static void Hpstm_24c_WriteToEeprom(uint16_t eepromAddr, uint8_t *buf, uint16_t bufLen){
+	uint16_t n = bufLen;
+
+	// NOTE: Written data may NOT cross EEPROM page boundaries!
+	while(n>0){
+		uint16_t chunkLen = HPSTM_24C_WRITE_PAGE_SIZE - (eepromAddr & HPSTM_24C_WRITE_PAGE_MASK);
+		chunkLen = HPSTM_MIN(n, chunkLen);
+		// now we can write data not crossing page boundary
+		if(HAL_I2C_Mem_Write(&hi2c1, HPSTM_24C_DEV_ADDRESS, eepromAddr,
+				I2C_MEMADD_SIZE_8BIT, buf, chunkLen, HPSTM_I2C_TIMEOUT_MS) != HAL_OK){
+			printf("EEPROM write failed eepromAddr=%" PRIx16 " bufLen=%" PRIu16, eepromAddr, bufLen);
+			Error_Handler();
+		}
+		HAL_Delay(HPSTM_24C_DELAY_AFTER_WRITE_MS); // delay after write
+
+		// update all addresses and remaining bytes to be written
+		buf += chunkLen;
+		eepromAddr += chunkLen;
+		n -= chunkLen;
+	}
+}
+
+static void HpStm_24c_WritePattern(uint8_t pattern){
+	memset(memBuf,pattern,sizeof(memBuf));
+	Hpstm_24c_WriteToEeprom(0,memBuf,sizeof(memBuf));
+
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -137,7 +208,6 @@ void HpStm_DumpBuf(uint8_t *buf, int n){
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* Enable I-Cache---------------------------------------------------------*/
@@ -168,23 +238,32 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   hpstm_uart_initialized = 1;
+  printf("\r\n\r\nStarting program on %s:%u\r\n", __FILE__, __LINE__);
+  printf("Program build date: %s %s\r\n", __DATE__, __TIME__);
+  printf("GCC version: %s\r\n", __VERSION__);
   // green LED on forever - to signal that init was done.
   HAL_GPIO_WritePin(GPIOB, LD1_Pin, GPIO_PIN_SET);
   // send message to UART
   printf("Init complete.\r\n");
   fflush(stdout);
 
-  // ensure that buffer is clean
-  memset(memBuf,0,sizeof(memBuf));
+  Hpstm_PrintDuration(0); // init tick counter
+  // erase EEPROM - to have clean "background"
+  printf("Cleaning EEPROM...\r\n");
+  HpStm_24c_WritePattern(0xff);
+  Hpstm_PrintDuration(1);
 
-  // read EEPROM to CPU's RAM - memBuf
-  if(HAL_I2C_Mem_Read(&hi2c1, HPSTM_24C_DEV_ADDRESS, 0, I2C_MEMADD_SIZE_8BIT,
-		  memBuf, sizeof(memBuf), HPSTM_I2C_TIMEOUT_MS)!= HAL_OK){
-	  printf("EEPROM read failed\n");
-	  Error_Handler();
-  }
-  // dump EEPROM memory to serial console
-  HpStm_DumpBuf(memBuf,sizeof(memBuf));
+  // fill something dynamic to testBuf
+  memset(testBuf,0,sizeof(testBuf));
+  snprintf((char*)testBuf,sizeof(testBuf),"Hello! SysTick=%" PRIu32 ,HAL_GetTick());
+  printf("Test string is: '%s'\r\n",testBuf);
+
+  printf("Writing test data to EEPROM...\r\n");
+  Hpstm_PrintDuration(0);
+  Hpstm_24c_WriteToEeprom(HPSTM_24C_TEST_ADDR,testBuf,strlen((char*)testBuf)+1);
+  Hpstm_PrintDuration(1);
+
+  Hpstm_ReadAndDumpEEPROM();
 
   /* USER CODE END 2 */
 

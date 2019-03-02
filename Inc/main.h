@@ -52,6 +52,11 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+// snprint(3)
+#include <stdio.h>
+// printf(3) macros for int types
+#include <inttypes.h>
+// memset(3), snprintf(3)
 #include <string.h>
 /* USER CODE END Includes */
 
