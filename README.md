@@ -54,7 +54,7 @@ Recommended Software:
 * [STM32CubeMX] - this project was generated using this tool.
   You can open `stm32-i2c-24c01c.ioc` project file and customize it.
 * Putty to watch info/error messages from ARM program.
-* [][Sigrok PulseView] most popular software for `Logical Analyzer`
+* [Sigrok PulseView][Sigrok PulseView] most popular software for `Logical Analyzer`
 
 # Build
 
