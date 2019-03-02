@@ -22,6 +22,9 @@ Other functions:
 * blinking blue LED in `while(1)` loop (after all EEPROM operations succesfully finished)
 * UART output on init or error.
 
+Here is picture of my prototype circuit:
+
+![STM32 Nucleo with I2C EEPROM 24C01C and Logic Analyzer](https://github.com/hpaluch/stm32-i2c-24c01c/blob/master/assets/stm32-i2c-24c01c-logic-analyzer.jpg?raw=true)
 
 ![Schematic of STM32 Nucleo with I2C EEPROM 24C01C](https://github.com/hpaluch/stm32-i2c-24c01c/blob/master/assets/ExpressPCB/nucleo-i2c-24c01c.png?raw=true) 
 
@@ -29,7 +32,18 @@ Other functions:
 # Setup
 
 Required Hardware:
-* [STM NUCLEO-F767ZI] development board with Cortex-M7 CPU
+* [STM NUCLEO-F767ZI] development board with Cortex-M7 CPU. 
+  Ordered [STM NUCLEO-F767ZI - Amazon.de]
+* [24C01C] - I2C EEPROM. Ordered [24C01C-I/P - Tme.eu]
+* 1x 100nF ceramic capacitor
+* 2x 4k7 resistor
+* any suitable bread-board for prototyping  
+
+Recommended Hardware:
+* `Logical Analyzer`. Ordered [KeeYees USB Logic Analyzer - Amazon.de]
+* [Amphenol 2x5 cable - Tme.eu] to reduce straing on Logical Analyzer's connector.
+* [Bread board wires - Tme.eu] to wire parts on bread board
+* [Elegoo Jumper Wires - Amazon.de] - to interconnect boards and Analyzer etc.
 
 Required Software:
 * [STM32CubeF7] Firmware package requried to build this project.
@@ -40,6 +54,7 @@ Recommended Software:
 * [STM32CubeMX] - this project was generated using this tool.
   You can open `stm32-i2c-24c01c.ioc` project file and customize it.
 * Putty to watch info/error messages from ARM program.
+* [][Sigrok PulseView] most popular software for `Logical Analyzer`
 
 # Build
 
@@ -147,12 +162,20 @@ You can also look
 on [How to access I2C EEPROM 24C01C from LC CH341A USB Adapter]
 to compare this solution to version using USB to I2C Adapter.
 
+[Sigrok PulseView]: https://sigrok.org/wiki/Main_Page
+[Elegoo Jumper Wires - Amazon.de]: https://www.amazon.de/Elegoo-Steckbrücken-Breadboard-Jumperkabel-Wiederverwendbare-Farbig/dp/B06XBHXWBD/
+[Bread board wires - Tme.eu]: https://www.tme.eu/en/details/wjw-70b/universal-pcbs/wisher-enterprise/
+[Amphenol 2x5 cable - Tme.eu]: https://www.tme.eu/en/details/fc10150-0/ribbon-cables-with-idc-connectors/amphenol/
+[24C01C-I/P - Tme.eu]: https://www.tme.eu/en/details/24c01c-i_p/serial-eeprom-memories-integ-circ/microchip-technology/ 
 [Atmel 24C01]: https://dflund.se/~triad/krad/entrega/at24c01.pdf
+[24C01C]: http://ww1.microchip.com/downloads/en/devicedoc/21201k.pdf
 [24C01C data-sheet]: http://ww1.microchip.com/downloads/en/devicedoc/21201k.pdf
-[KeeYees USB Logic Analyzer]: https://www.amazon.de/KeeYees-Logic-Analyzer-Farben-Arduino/dp/B07K6G55WG/
+[KeeYees USB Logic Analyzer - Amazon.de]: https://www.amazon.de/KeeYees-Logic-Analyzer-Farben-Arduino/dp/B07K6G55WG/
 [STM32CubeF7]: https://www.st.com/en/embedded-software/stm32cubef7.html
 [System Workbench for STM32]: http://www.openstm32.org/System%2BWorkbench%2Bfor%2BSTM32
 [STM32CubeMX]: https://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-configurators-and-code-generators/stm32cubemx.html
+
+[STM NUCLEO-F767ZI - Amazon.de]: https://www.amazon.de/dp/B072MMZZBK/
 [STM NUCLEO-F767ZI]: https://www.st.com/content/st_com/en/products/evaluation-tools/product-evaluation-tools/mcu-eval-tools/stm32-mcu-eval-tools/stm32-mcu-nucleo/nucleo-f767zi.html
 [Getting started with ST NUCLEO F767ZI Board]: https://github.com/hpaluch/hpaluch.github.io/wiki/Getting-started-with-ST-NUCLEO-F767ZI-Board
 [STM32CubeF7]: https://www.st.com/en/embedded-software/stm32cubef7.html
