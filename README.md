@@ -126,6 +126,10 @@ NOTES:
 
 * There is absolutely perfect 100Khz timing as can be seen on right corner "Cursors"
 
+Reading all data from EEPROM:
+
+![STM32 - I2C EEPROM 24C01C read all](https://github.com/hpaluch/stm32-i2c-24c01c/blob/master/assets/PulseView/stm32-i2c-24c01c-read-all.png?raw=true) 
+
 
 # Random notes
 
