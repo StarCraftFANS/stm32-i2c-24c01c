@@ -134,8 +134,9 @@ EEPROM write (writing test string `Hello! ...` starting on EEPROM address `0x5`:
 
 NOTES:
 * The warning `Warning: Page write crossed...` is harmless in case 
-  of `24C01C` EEPROM (it has 16-byte page buffer as described  
-  in [24C01C data-sheet][24C01C]. However if you will use different EEPROM version
+  of `24C01C` EEPROM (it has 16-byte page buffer as described
+  in [24C01C data-sheet][24C01C]. However if you will use
+  different EEPROM version
   you may need to correct macro:
   
   ```c
